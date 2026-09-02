@@ -1,0 +1,4 @@
+{
+  "mfeEvents": "http://localhost:4201/remoteEntry.json",
+  "mfeBooking": "http://localhost:4202/remoteEntry.json"
+}

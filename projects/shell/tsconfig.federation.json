@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.app.json",
+  "files": [
+    "../shared-kernel/src/public-api.ts"
+  ],
+  "include": [
+    "src/**/*.d.ts"
+  ]
+}

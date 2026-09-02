@@ -50,11 +50,13 @@ import { BookingStateService } from '../services/booking-state.service';
           <div class="brief-info">
             <span class="brief-cat">{{ ev.categoryLabel }} • {{ ev.modality }}</span>
             <h3 class="brief-title">{{ ev.title }}</h3>
-            <span class="brief-mentor">Mentor: {{ ev.instructor.name }} ({{ ev.instructor.company }})</span>
+            <span class="brief-mentor" *ngIf="ev.instructor">Mentor: {{ ev.instructor.name }} ({{ ev.instructor.company }})</span>
+            <span class="brief-mentor" *ngIf="!ev.instructor && ev.eventType === 'concert'">Género: {{ ev.concertData?.genre }}</span>
+            <span class="brief-mentor" *ngIf="!ev.instructor && ev.eventType !== 'concert'">Sede: {{ ev.location }}</span>
           </div>
           <div class="brief-price">
             <span class="total-label">Total a Pagar</span>
-            <span class="price-val">\${{ state.calculatedTotal() }} <small>USD</small></span>
+            <span class="price-val">{{ '$' + state.calculatedTotal() }} <small>USD</small></span>
           </div>
         </div>
 
@@ -122,7 +124,7 @@ import { BookingStateService } from '../services/booking-state.service';
                   <h3 class="tier-title">{{ tier.title }}</h3>
                   <p class="tier-sub">{{ tier.subtitle }}</p>
                   <div class="tier-pricing">
-                    <span class="t-price">\${{ Math.round((state.selectedEvent()?.price || 0) * tier.priceMultiplier) }}</span>
+                    <span class="t-price">{{ '$' + Math.round((state.selectedEvent()?.price || 0) * tier.priceMultiplier) }}</span>
                     <span class="t-unit">USD</span>
                   </div>
                 </div>
@@ -231,15 +233,15 @@ import { BookingStateService } from '../services/booking-state.service';
                 </div>
                 <div class="summary-line">
                   <span>Subtotal:</span>
-                  <span class="val-num">\${{ state.calculatedSubtotal() }} USD</span>
+                  <span class="val-num">{{ '$' + state.calculatedSubtotal() }} USD</span>
                 </div>
                 <div class="summary-line discount-line" *ngIf="state.discountPercent() > 0">
                   <span>Descuento ({{ state.discountPercent() }}%):</span>
-                  <span class="val-num discount-val">-\${{ state.calculatedDiscount() }} USD</span>
+                  <span class="val-num discount-val">-{{ '$' + state.calculatedDiscount() }} USD</span>
                 </div>
                 <div class="summary-total-line">
                   <span>Inversión Total:</span>
-                  <span class="total-big">\${{ state.calculatedTotal() }} USD</span>
+                  <span class="total-big">{{ '$' + state.calculatedTotal() }} USD</span>
                 </div>
                 <div class="payment-guarantee">
                   <span>🔒 Checkout Simulado Seguro • Cero Riesgo</span>
@@ -364,7 +366,7 @@ import { BookingStateService } from '../services/booking-state.service';
             [disabled]="!state.attendeeName() || !state.attendeeEmail()"
             (click)="onConfirmBooking()"
           >
-            ✨ Confirmar y Generar Pase (\${{ state.calculatedTotal() }} USD)
+            ✨ Confirmar y Generar Pase ({{ '$' + state.calculatedTotal() }} USD)
           </button>
         </div>
 

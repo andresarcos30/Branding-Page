@@ -1,5 +1,8 @@
 import { initFederation } from '@angular-architects/native-federation';
 
+(globalThis as any).ngDevMode = true;
+(globalThis as any).ngServerMode = false;
+
 initFederation(
   {},
   {

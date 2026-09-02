@@ -12,9 +12,9 @@ import { FormsModule } from '@angular/forms';
         <!-- Top Newsletter Row -->
         <div class="newsletter-card">
           <div class="newsletter-left">
-            <span class="news-badge">AURORA RADAR TECH</span>
-            <h3 class="news-title">Recibe convocatorias prioritarias & masterclasses exclusivas</h3>
-            <p class="news-desc">Te avisamos antes del lanzamiento público para que nunca te quedes sin cupo.</p>
+            <span class="news-badge">AURORA RADAR 2026</span>
+            <h3 class="news-title">Preventas exclusivas para cursos, festivales & meetups</h3>
+            <p class="news-desc">Te avisamos antes de las salidas al público general para asegurar tus entradas y cupos con descuento early-bird.</p>
           </div>
           <div class="newsletter-form">
             <input
@@ -37,49 +37,56 @@ import { FormsModule } from '@angular/forms';
               <span class="logo-name">AURORA</span>
             </div>
             <p class="brand-desc">
-              Plataforma de formación técnica y summits de alto nivel para ingenieros, arquitectos y diseñadores de producto de habla hispana.
+              El ecosistema definitivo de experiencias 2026: educación tecnológica de alto impacto, 
+              festivales de música en vivo, hackathons y ocio cultural para la comunidad más ambiciosa de Latinoamérica.
             </p>
             <div class="social-links">
-              <a href="#" class="social-icon">𝕏</a>
-              <a href="#" class="social-icon">in</a>
-              <a href="#" class="social-icon">gh</a>
-              <a href="#" class="social-icon">yt</a>
+              <a href="#" class="social-icon" aria-label="X">𝕏</a>
+              <a href="#" class="social-icon" aria-label="LinkedIn">in</a>
+              <a href="#" class="social-icon" aria-label="GitHub">gh</a>
+              <a href="#" class="social-icon" aria-label="YouTube">yt</a>
             </div>
           </div>
 
           <div class="col-links">
-            <h4 class="col-title">Talleres 2026</h4>
-            <a href="#talleres">IA Generativa & Agentes</a>
-            <a href="#talleres">Micro Frontends a Escala</a>
-            <a href="#talleres">Design Systems & UI Ops</a>
-            <a href="#talleres">Cloud FinOps & Kubernetes</a>
-            <a href="#talleres">Executive Tech Leadership</a>
+            <h4 class="col-title">🎓 Cursos 2026</h4>
+            <a href="#talleres">Full Stack con IA</a>
+            <a href="#talleres">Data Science & ML</a>
+            <a href="#talleres">Product Management</a>
+            <a href="#talleres">Programas Certificados</a>
           </div>
 
           <div class="col-links">
-            <h4 class="col-title">Plataforma</h4>
-            <a href="#metodologia">El Método AURORA</a>
-            <a href="#mentores">Conoce a los Mentores</a>
-            <a href="#testimonios">Casos de Graduados</a>
-            <a href="#faq">Preguntas Frecuentes</a>
-            <a href="#">Pases Squad para Empresas</a>
+            <h4 class="col-title">🎵 Conciertos</h4>
+            <a href="#talleres">AURORA Music Fest</a>
+            <a href="#talleres">Noche Quantum</a>
+            <a href="#talleres">Jazz & Innovation</a>
+            <a href="#talleres">Lineup 2026</a>
+          </div>
+
+          <div class="col-links">
+            <h4 class="col-title">🎉 Ocio & Meetups</h4>
+            <a href="#talleres">Hackathon 48h ($50K)</a>
+            <a href="#talleres">Feria Tech Ágora</a>
+            <a href="#talleres">Angular Colombia</a>
+            <a href="#talleres">Networking Drinks</a>
           </div>
 
           <div class="col-links">
             <h4 class="col-title">Legal & Soporte</h4>
             <a href="#">Términos de Servicio</a>
             <a href="#">Política de Privacidad</a>
-            <a href="#">Garantía de Satisfacción 7 Días</a>
+            <a href="#">Garantía 7 Días</a>
             <a href="#">contacto&#64;aurorasummit.io</a>
           </div>
         </div>
 
         <!-- Copyright & Micro Frontend badge -->
         <div class="footer-bottom">
-          <span>© 2026 AURORA Summit & Workshops Hub. Todos los derechos reservados.</span>
+          <span>© 2026 AURORA Ecosystem. Cursos, Conciertos, Ocio & Talleres. Todos los derechos reservados.</span>
           <div class="arch-badge">
             <span class="arch-dot"></span>
-            <span>Micro Frontends Architecture: Shell + MFE Events + MFE Booking (Angular 22)</span>
+            <span>Arquitectura Micro Frontends • Native Federation • Angular 22</span>
           </div>
         </div>
       </div>
@@ -93,7 +100,7 @@ import { FormsModule } from '@angular/forms';
     }
 
     .footer-container {
-      max-width: 1280px;
+      max-width: 1320px;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
@@ -101,8 +108,8 @@ import { FormsModule } from '@angular/forms';
     }
 
     .newsletter-card {
-      background: linear-gradient(135deg, rgba(30, 27, 75, 0.6) 0%, rgba(15, 23, 42, 0.9) 100%);
-      border: 1px solid rgba(99, 102, 241, 0.3);
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(236, 72, 153, 0.08) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 20px;
       padding: 36px 40px;
       display: flex;
@@ -112,27 +119,36 @@ import { FormsModule } from '@angular/forms';
       flex-wrap: wrap;
     }
 
+    .newsletter-left {
+      max-width: 550px;
+    }
+
     .news-badge {
+      display: inline-block;
       font-size: 0.72rem;
-      font-weight: 800;
-      color: #818cf8;
+      font-weight: 700;
       letter-spacing: 0.1em;
-      display: block;
-      margin-bottom: 6px;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      padding: 3px 10px;
+      border-radius: 9999px;
+      margin-bottom: 10px;
     }
 
     .news-title {
-      font-size: 1.35rem;
+      font-size: 1.45rem;
       font-weight: 800;
       color: #ffffff;
-      margin: 0 0 6px;
+      margin: 0 0 8px;
       font-family: 'Outfit', sans-serif;
     }
 
     .news-desc {
-      font-size: 0.88rem;
       color: #94a3b8;
+      font-size: 0.92rem;
       margin: 0;
+      line-height: 1.5;
     }
 
     .newsletter-form {
@@ -142,23 +158,34 @@ import { FormsModule } from '@angular/forms';
       max-width: 440px;
     }
 
+    @media (max-width: 600px) {
+      .newsletter-form {
+        flex-direction: column;
+        width: 100%;
+      }
+    }
+
     .news-input {
       background: rgba(0, 0, 0, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 10px;
-      padding: 12px 16px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
       color: #ffffff;
+      padding: 12px 16px;
+      border-radius: 12px;
       font-size: 0.9rem;
-      outline: none;
       flex-grow: 1;
+      outline: none;
+    }
+
+    .news-input:focus {
+      border-color: #6366f1;
     }
 
     .btn-news-submit {
-      background: #6366f1;
+      background: linear-gradient(135deg, #6366f1, #a855f7);
       color: #ffffff;
       border: none;
-      padding: 12px 22px;
-      border-radius: 10px;
+      padding: 12px 24px;
+      border-radius: 12px;
       font-weight: 700;
       font-size: 0.9rem;
       cursor: pointer;
@@ -167,47 +194,59 @@ import { FormsModule } from '@angular/forms';
     }
 
     .btn-news-submit:hover {
-      background: #4f46e5;
+      filter: brightness(1.1);
+      transform: translateY(-1px);
     }
 
     .footer-links-grid {
       display: grid;
-      grid-template-columns: 1.5fr 1fr 1fr 1fr;
-      gap: 40px;
+      grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+      gap: 36px;
     }
 
-    @media (max-width: 860px) {
+    @media (max-width: 990px) {
       .footer-links-grid {
         grid-template-columns: 1fr 1fr;
       }
+      .col-brand {
+        grid-column: span 2;
+      }
     }
 
-    @media (max-width: 500px) {
+    @media (max-width: 600px) {
       .footer-links-grid {
         grid-template-columns: 1fr;
+      }
+      .col-brand {
+        grid-column: span 1;
       }
     }
 
     .footer-brand {
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-family: 'Outfit', sans-serif;
-      font-weight: 900;
-      font-size: 1.35rem;
-      color: #ffffff;
-      margin-bottom: 12px;
+      gap: 10px;
+      margin-bottom: 16px;
     }
 
     .logo-spark {
-      color: #6366f1;
+      color: #818cf8;
+      font-size: 1.5rem;
+    }
+
+    .logo-name {
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: #ffffff;
+      font-family: 'Outfit', sans-serif;
+      letter-spacing: 0.05em;
     }
 
     .brand-desc {
-      font-size: 0.86rem;
-      color: #64748b;
+      color: #94a3b8;
+      font-size: 0.88rem;
       line-height: 1.6;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
     }
 
     .social-links {
@@ -218,13 +257,13 @@ import { FormsModule } from '@angular/forms';
     .social-icon {
       width: 36px;
       height: 36px;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #cbd5e1;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #94a3b8;
       text-decoration: none;
       font-size: 0.85rem;
       font-weight: 700;
@@ -232,18 +271,18 @@ import { FormsModule } from '@angular/forms';
     }
 
     .social-icon:hover {
-      color: #ffffff;
-      background: rgba(99, 102, 241, 0.2);
+      background: rgba(99, 102, 241, 0.25);
       border-color: #6366f1;
+      color: #ffffff;
+      transform: translateY(-2px);
     }
 
     .col-title {
-      font-size: 0.82rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
       color: #ffffff;
+      font-size: 0.95rem;
+      font-weight: 700;
       margin: 0 0 16px;
+      font-family: 'Outfit', sans-serif;
     }
 
     .col-links {
@@ -255,8 +294,8 @@ import { FormsModule } from '@angular/forms';
     .col-links a {
       color: #94a3b8;
       text-decoration: none;
-      font-size: 0.86rem;
-      transition: color 0.2s;
+      font-size: 0.85rem;
+      transition: color 0.2s ease;
     }
 
     .col-links a:hover {
@@ -271,43 +310,41 @@ import { FormsModule } from '@angular/forms';
       align-items: center;
       flex-wrap: wrap;
       gap: 16px;
-      font-size: 0.78rem;
       color: #64748b;
+      font-size: 0.82rem;
     }
 
     .arch-badge {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: rgba(16, 185, 129, 0.08);
-      border: 1px solid rgba(16, 185, 129, 0.2);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
       padding: 4px 12px;
       border-radius: 9999px;
-      color: #34d399;
-      font-size: 0.72rem;
-      font-weight: 600;
+      font-size: 0.75rem;
+      color: #94a3b8;
     }
 
     .arch-dot {
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: #10b981;
-      box-shadow: 0 0 8px #10b981;
+      background: #34d399;
+      box-shadow: 0 0 6px #34d399;
     }
   `],
 })
 export class FooterComponent {
   subscriberEmail = '';
-  readonly isSubscribed = signal<boolean>(false);
+  readonly isSubscribed = signal(false);
 
   subscribe(): void {
-    if (this.subscriberEmail.includes('@')) {
+    if (this.subscriberEmail && this.subscriberEmail.includes('@')) {
       this.isSubscribed.set(true);
       setTimeout(() => {
         this.subscriberEmail = '';
-        this.isSubscribed.set(false);
-      }, 4000);
+      }, 3000);
     }
   }
 }

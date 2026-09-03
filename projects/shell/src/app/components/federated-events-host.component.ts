@@ -1,5 +1,5 @@
-import { Component, OnInit, signal, ViewContainerRef, inject, Type } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, signal, ViewContainerRef, inject, Type, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { loadRemoteModule } from '@angular-architects/native-federation';
 
 @Component({
@@ -74,9 +74,13 @@ import { loadRemoteModule } from '@angular-architects/native-federation';
 })
 export class FederatedEventsHostComponent implements OnInit {
   private readonly vcr = inject(ViewContainerRef);
+  private readonly platformId = inject(PLATFORM_ID);
   readonly isRemoteLoaded = signal<boolean>(false);
 
   async ngOnInit(): Promise<void> {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
     try {
       let m: any;
       try {

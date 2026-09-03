@@ -151,7 +151,7 @@ export class BookingStateService {
       'BEGIN:VEVENT',
       `UID:${confirmation.bookingId}@aurora.summit`,
       `SUMMARY:${event.title} - AURORA Masterclass`,
-      `DESCRIPTION:Taller Intensivo: ${event.subtitle}\\nMentor: ${event.instructor.name}\\nPase: ${confirmation.tier.toUpperCase()}\\nCódigo Reserva: ${confirmation.bookingId}`,
+      `DESCRIPTION:Evento: ${event.subtitle}\\nHost/Mentor: ${event.instructor?.name || 'Organización AURORA'}\\nPase: ${confirmation.tier.toUpperCase()}\\nCódigo Reserva: ${confirmation.bookingId}`,
       `LOCATION:${event.location}`,
       `DTSTART:${startDate}`,
       `DTEND:${endDate}`,

@@ -20,15 +20,98 @@ import { WorkshopEvent } from 'shared-kernel';
           <div class="header-badges">
             <span class="pill-info">⏱ {{ event.duration }}</span>
             <span class="pill-info">📍 {{ event.location }}</span>
-            <span class="pill-info">🎯 Nivel {{ event.level }}</span>
+            <span class="pill-info">🎯 {{ event.level }}</span>
           </div>
         </div>
 
         <!-- Drawer Body Scrollable -->
         <div class="drawer-scroll">
-          <!-- Instructor Full Profile -->
-          <section class="drawer-section">
-            <h4 class="section-heading">Mentor Principal</h4>
+          <!-- CONCERT: Line-Up & Festival Specs -->
+          <section class="drawer-section" *ngIf="event.eventType === 'concert' && event.concertData as concert">
+            <h4 class="section-heading accent-pink">Line-Up & Artistas Confirmados</h4>
+            <div class="concert-artists-grid">
+              <div class="artist-pill" *ngFor="let artist of concert.lineUp">
+                <span class="artist-mic">🎤</span>
+                <span class="artist-title">{{ artist }}</span>
+              </div>
+            </div>
+            <div class="concert-specs-row">
+              <div class="spec-card">
+                <span class="spec-label">Género Musical</span>
+                <span class="spec-value">{{ concert.genre }}</span>
+              </div>
+              <div class="spec-card">
+                <span class="spec-label">Escenario</span>
+                <span class="spec-value">{{ concert.stageName }}</span>
+              </div>
+              <div class="spec-card">
+                <span class="spec-label">Apertura Puertas</span>
+                <span class="spec-value">{{ concert.doorOpeningTime }}</span>
+              </div>
+              <div class="spec-card">
+                <span class="spec-label">Edad Mínima</span>
+                <span class="spec-value">{{ concert.ageRestriction }}</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- LEISURE / MEETUP: Experience Specs -->
+          <section class="drawer-section" *ngIf="(event.eventType === 'leisure' || event.eventType === 'meetup') && event.leisureData as leisure">
+            <h4 class="section-heading accent-amber">Experiencia & Actividades de Ocio</h4>
+            <div class="leisure-activities-grid">
+              <div class="activity-card" *ngFor="let act of leisure.activitiesHighlight">
+                <span class="activity-star">✦</span>
+                <span>{{ act }}</span>
+              </div>
+            </div>
+            <div class="leisure-specs-row">
+              <div class="spec-card" *ngIf="leisure.dressCode">
+                <span class="spec-label">Dress Code</span>
+                <span class="spec-value">{{ leisure.dressCode }}</span>
+              </div>
+              <div class="spec-card">
+                <span class="spec-label">Alimentación / Catering</span>
+                <span class="spec-value">{{ leisure.foodIncluded ? '✅ Incluida durante el evento' : 'Zonas Gourmet disponibles' }}</span>
+              </div>
+              <div class="spec-card" *ngIf="leisure.minAge">
+                <span class="spec-label">Edad Mínima</span>
+                <span class="spec-value">+{{ leisure.minAge }} años</span>
+              </div>
+              <div class="spec-card" *ngIf="event.meetupData?.communityName">
+                <span class="spec-label">Comunidad Organizadora</span>
+                <span class="spec-value">{{ event.meetupData?.communityName }}</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- COURSE: Syllabus & Modules -->
+          <section class="drawer-section" *ngIf="event.eventType === 'course' && event.courseData as course">
+            <h4 class="section-heading accent-violet">Estructura Académica del Curso</h4>
+            <div class="course-metrics-row">
+              <div class="metric-box">
+                <span class="metric-val">{{ course.syllabusWeeks }} Semanas</span>
+                <span class="metric-lbl">Duración Programa</span>
+              </div>
+              <div class="metric-box">
+                <span class="metric-val">{{ course.academicHours }} Horas</span>
+                <span class="metric-lbl">Carga Académica</span>
+              </div>
+              <div class="metric-box">
+                <span class="metric-val">100% Práctico</span>
+                <span class="metric-lbl">Proyectos Reales</span>
+              </div>
+            </div>
+            <div class="modules-accordion" *ngIf="course.modules">
+              <div class="module-item" *ngFor="let mod of course.modules; let idx = index">
+                <span class="mod-badge">Módulo {{ idx + 1 }}</span>
+                <span class="mod-title">{{ mod }}</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Instructor Profile (Only if exists) -->
+          <section class="drawer-section" *ngIf="event.instructor">
+            <h4 class="section-heading">Mentor & Especialista</h4>
             <div class="instructor-detailed-card">
               <img [src]="event.instructor.avatar" [alt]="event.instructor.name" class="avatar-lg" />
               <div class="instructor-body">
@@ -44,13 +127,13 @@ import { WorkshopEvent } from 'shared-kernel';
 
           <!-- Overview & Description -->
           <section class="drawer-section">
-            <h4 class="section-heading">Descripción del Taller</h4>
+            <h4 class="section-heading">Descripción del Evento</h4>
             <p class="description-text">{{ event.description }}</p>
           </section>
 
-          <!-- Syllabus & Topics -->
+          <!-- Syllabus & Topics / Highlights -->
           <section class="drawer-section">
-            <h4 class="section-heading">Contenido y Objetivos de Aprendizaje</h4>
+            <h4 class="section-heading">{{ event.eventType === 'concert' ? 'Puntos Clave del Show' : 'Contenido y Temario' }}</h4>
             <div class="topics-list">
               <div class="topic-item" *ngFor="let topic of event.topics; let i = index">
                 <span class="topic-num">0{{ i + 1 }}</span>
@@ -61,7 +144,7 @@ import { WorkshopEvent } from 'shared-kernel';
 
           <!-- What's Included -->
           <section class="drawer-section">
-            <h4 class="section-heading">¿Qué Incluye este Programa?</h4>
+            <h4 class="section-heading">¿Qué Incluye tu Entrada / Registro?</h4>
             <div class="includes-grid">
               <div class="include-item" *ngFor="let item of event.includes">
                 <span class="check-icon">✓</span>
@@ -82,7 +165,7 @@ import { WorkshopEvent } from 'shared-kernel';
                 </div>
                 <div class="slot-status">
                   <span *ngIf="slot.availableSeats > 0" class="seats-avail">
-                    {{ slot.availableSeats }} cupos libres
+                    {{ slot.availableSeats }} cupos disponibles
                   </span>
                   <span *ngIf="slot.availableSeats === 0" class="seats-none">
                     Agotado
@@ -96,11 +179,12 @@ import { WorkshopEvent } from 'shared-kernel';
         <!-- Drawer Footer with Sticky CTA -->
         <div class="drawer-footer">
           <div class="price-summary">
-            <span class="price-val">\${{ event.price }} USD</span>
-            <span class="price-sub">Garantía de satisfacción de 7 días</span>
+            <span class="price-val" *ngIf="event.price > 0">{{ '$' + event.price }} USD</span>
+            <span class="price-val text-free" *ngIf="event.price === 0">GRATIS</span>
+            <span class="price-sub">{{ event.price === 0 ? 'Registro libre 2026' : 'Garantía y confirmación inmediata' }}</span>
           </div>
-          <button type="button" class="btn-action-book" (click)="book.emit(event)">
-            Agendar Ahora y Reservar Cupo →
+          <button type="button" class="btn-action-book" [ngClass]="getBtnClass(event.eventType)" (click)="book.emit(event)">
+            {{ getBtnText(event.eventType, event.price) }}
           </button>
         </div>
       </div>
@@ -120,7 +204,7 @@ import { WorkshopEvent } from 'shared-kernel';
 
     .drawer-content {
       width: 100%;
-      max-width: 620px;
+      max-width: 640px;
       height: 100%;
       background: #0d1322;
       border-left: 1px solid rgba(255, 255, 255, 0.12);
@@ -233,6 +317,152 @@ import { WorkshopEvent } from 'shared-kernel';
       margin: 0 0 14px;
     }
 
+    .section-heading.accent-pink {
+      color: #f43f5e;
+    }
+
+    .section-heading.accent-amber {
+      color: #f59e0b;
+    }
+
+    .section-heading.accent-violet {
+      color: #a855f7;
+    }
+
+    /* Concert elements */
+    .concert-artists-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .artist-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(244, 63, 94, 0.12);
+      border: 1px solid rgba(244, 63, 94, 0.3);
+      padding: 8px 14px;
+      border-radius: 9999px;
+      color: #fecdd3;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .concert-specs-row, .leisure-specs-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+    }
+
+    .spec-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 10px 12px;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .spec-label {
+      font-size: 0.72rem;
+      color: #94a3b8;
+    }
+
+    .spec-value {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    /* Leisure elements */
+    .leisure-activities-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .activity-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(245, 158, 11, 0.08);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+      padding: 10px 14px;
+      border-radius: 8px;
+      color: #fef3c7;
+      font-size: 0.88rem;
+    }
+
+    .activity-star {
+      color: #f59e0b;
+    }
+
+    /* Course elements */
+    .course-metrics-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .metric-box {
+      background: rgba(168, 85, 247, 0.08);
+      border: 1px solid rgba(168, 85, 247, 0.25);
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .metric-val {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #d8b4fe;
+    }
+
+    .metric-lbl {
+      font-size: 0.72rem;
+      color: #94a3b8;
+    }
+
+    .modules-accordion {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .module-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 10px 14px;
+      border-radius: 8px;
+    }
+
+    .mod-badge {
+      background: #7c3aed;
+      color: #ffffff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .mod-title {
+      font-size: 0.88rem;
+      color: #f1f5f9;
+      font-weight: 500;
+    }
+
+    /* Instructor Profile */
     .instructor-detailed-card {
       display: flex;
       gap: 16px;
@@ -423,6 +653,10 @@ import { WorkshopEvent } from 'shared-kernel';
       font-family: 'Outfit', sans-serif;
     }
 
+    .price-val.text-free {
+      color: #34d399;
+    }
+
     .price-sub {
       font-size: 0.72rem;
       color: #94a3b8;
@@ -439,6 +673,7 @@ import { WorkshopEvent } from 'shared-kernel';
       cursor: pointer;
       box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
       transition: all 0.25s ease;
+      white-space: nowrap;
     }
 
     .btn-action-book:hover {
@@ -446,10 +681,46 @@ import { WorkshopEvent } from 'shared-kernel';
       box-shadow: 0 6px 25px rgba(99, 102, 241, 0.6);
       filter: brightness(1.1);
     }
+
+    .btn-concert {
+      background: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%);
+      box-shadow: 0 4px 20px rgba(236, 72, 153, 0.5);
+    }
+
+    .btn-course {
+      background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+      box-shadow: 0 4px 20px rgba(124, 58, 237, 0.5);
+    }
+
+    .btn-leisure {
+      background: linear-gradient(135deg, #10b981 0%, #0284c7 100%);
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.5);
+    }
   `],
 })
 export class EventDetailDrawerComponent {
   @Input({ required: true }) event!: WorkshopEvent;
   @Output() close = new EventEmitter<void>();
   @Output() book = new EventEmitter<WorkshopEvent>();
+
+  getBtnClass(type?: string): string {
+    switch (type) {
+      case 'concert': return 'btn-concert';
+      case 'course': return 'btn-course';
+      case 'leisure':
+      case 'meetup': return 'btn-leisure';
+      default: return '';
+    }
+  }
+
+  getBtnText(type?: string, price?: number): string {
+    if (price === 0) return 'Registrarme Gratis Ahora →';
+    switch (type) {
+      case 'concert': return 'Comprar Entradas Concierto →';
+      case 'course': return 'Inscribirme en el Curso →';
+      case 'leisure':
+      case 'meetup': return 'Confirmar Asistencia →';
+      default: return 'Agendar Ahora y Reservar Cupo →';
+    }
+  }
 }

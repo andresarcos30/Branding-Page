@@ -17,20 +17,23 @@ export class FederatedBookingHostComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     try {
-      // Try loading from federated remote (port 4202)
-      const m = await loadRemoteModule({
-        remoteName: 'mfeBooking',
-        exposedModule: './BookingModal',
-      });
+      let m: any;
+      try {
+        m = await loadRemoteModule({
+          remoteName: 'mfe-booking',
+          exposedModule: './BookingModal',
+        });
+      } catch {
+        m = await loadRemoteModule({
+          remoteName: 'mfeBooking',
+          exposedModule: './BookingModal',
+        });
+      }
       const componentClass: Type<any> = m.BookingModalComponent || Object.values(m)[0];
       this.vcr.createComponent(componentClass);
       this.isRemoteLoaded.set(true);
     } catch (err) {
-      console.warn('Federated remote mfe-booking offline, fallback to local workspace component:', err);
-      // Seamless fallback to component from workspace
-      const { BookingModalComponent } = await import('../../../../mfe-booking/src/app/components/booking-modal.component');
-      this.vcr.createComponent(BookingModalComponent);
-      this.isRemoteLoaded.set(false);
+      console.error('Error cargando remote mfe-booking:', err);
     }
   }
 }

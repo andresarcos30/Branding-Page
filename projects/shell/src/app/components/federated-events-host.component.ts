@@ -12,7 +12,7 @@ import { loadRemoteModule } from '@angular-architects/native-federation';
       <div class="mfe-header-bar">
         <div class="mfe-badge" [class.federated]="isRemoteLoaded()">
           <span class="pulse-indicator"></span>
-          <span>{{ isRemoteLoaded() ? 'MFE-EVENTS FEDERATED (Port 4201)' : 'MFE-EVENTS LOCAL KERNEL' }}</span>
+          <span>{{ isRemoteLoaded() ? 'MFE-EVENTS FEDERATED (Port 4201)' : 'MFE-EVENTS CARGANDO...' }}</span>
         </div>
         <span class="mfe-tech-tag">Native Federation • Dynamic Standalone Module</span>
       </div>
@@ -78,20 +78,23 @@ export class FederatedEventsHostComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     try {
-      // Try loading from federated remote (port 4201)
-      const m = await loadRemoteModule({
-        remoteName: 'mfeEvents',
-        exposedModule: './EventsCatalog',
-      });
+      let m: any;
+      try {
+        m = await loadRemoteModule({
+          remoteName: 'mfe-events',
+          exposedModule: './EventsCatalog',
+        });
+      } catch {
+        m = await loadRemoteModule({
+          remoteName: 'mfeEvents',
+          exposedModule: './EventsCatalog',
+        });
+      }
       const componentClass: Type<any> = m.EventsCatalogComponent || Object.values(m)[0];
       this.vcr.createComponent(componentClass);
       this.isRemoteLoaded.set(true);
     } catch (err) {
-      console.warn('Federated remote mfe-events offline, fallback to local workspace component:', err);
-      // Seamless fallback to the component from workspace
-      const { EventsCatalogComponent } = await import('../../../../mfe-events/src/app/components/events-catalog.component');
-      this.vcr.createComponent(EventsCatalogComponent);
-      this.isRemoteLoaded.set(false);
+      console.error('Error cargando remote mfe-events:', err);
     }
   }
 }

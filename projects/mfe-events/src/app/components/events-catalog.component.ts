@@ -1,7 +1,7 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { WorkshopEvent, EventCategory, EventModality, CrossMfeBusService } from 'shared-kernel';
+import { WorkshopEvent, CrossMfeBusService } from 'shared-kernel';
 import { EventsCatalogService } from '../services/events-catalog.service';
 import { EventCardComponent } from './event-card.component';
 import { EventDetailDrawerComponent } from './event-detail-drawer.component';
@@ -16,13 +16,81 @@ import { EventDetailDrawerComponent } from './event-detail-drawer.component';
       <div class="catalog-header">
         <div class="header-badge">
           <span class="pulse-spark"></span>
-          <span>Temporada de Talleres 2026</span>
+          <span>Temporada Global 2026 • Experiencias Oficiales</span>
         </div>
-        <h2 class="catalog-title">Explora Nuestros Talleres & Masterclasses</h2>
+        <h2 class="catalog-title">Cursos, Conciertos & Eventos de Ocio</h2>
         <p class="catalog-desc">
-          Programas intensivos dirigidos por líderes activos en la industria global. 
-          Aprende con código en vivo, casos de producción reales y acompañamiento cercano.
+          Desde academias intensivas de código e IA, hasta festivales de música masivos, hackathons de 48 horas 
+          y noches exclusivas de jazz y networking. Descubre la agenda 2026 diseñada para inspirar y conectar.
         </p>
+      </div>
+
+      <!-- Main Hub Categories (Macro Tabs 2026) -->
+      <div class="macro-hub-tabs">
+        <button
+          type="button"
+          class="macro-tab"
+          [class.active]="selectedMacroType() === 'all'"
+          (click)="setMacroType('all')"
+        >
+          <span class="macro-icon">✨</span>
+          <div class="macro-text">
+            <span class="macro-title">Todos</span>
+            <span class="macro-count">{{ allEvents().length }} Experiencias</span>
+          </div>
+        </button>
+
+        <button
+          type="button"
+          class="macro-tab tab-course"
+          [class.active]="selectedMacroType() === 'course'"
+          (click)="setMacroType('course')"
+        >
+          <span class="macro-icon">🎓</span>
+          <div class="macro-text">
+            <span class="macro-title">Cursos & Academias</span>
+            <span class="macro-count">{{ countByType('course') }} Programas</span>
+          </div>
+        </button>
+
+        <button
+          type="button"
+          class="macro-tab tab-concert"
+          [class.active]="selectedMacroType() === 'concert'"
+          (click)="setMacroType('concert')"
+        >
+          <span class="macro-icon">🎵</span>
+          <div class="macro-text">
+            <span class="macro-title">Conciertos & Festivales</span>
+            <span class="macro-count">{{ countByType('concert') }} Shows en Vivo</span>
+          </div>
+        </button>
+
+        <button
+          type="button"
+          class="macro-tab tab-leisure"
+          [class.active]="selectedMacroType() === 'leisure'"
+          (click)="setMacroType('leisure')"
+        >
+          <span class="macro-icon">🎉</span>
+          <div class="macro-text">
+            <span class="macro-title">Ocio & Meetups</span>
+            <span class="macro-count">{{ countByType('leisure') }} Encuentros</span>
+          </div>
+        </button>
+
+        <button
+          type="button"
+          class="macro-tab tab-workshop"
+          [class.active]="selectedMacroType() === 'workshop'"
+          (click)="setMacroType('workshop')"
+        >
+          <span class="macro-icon">⚡</span>
+          <div class="macro-text">
+            <span class="macro-title">Talleres Avanzados</span>
+            <span class="macro-count">{{ countByType('workshop') }} Masterclasses</span>
+          </div>
+        </button>
       </div>
 
       <!-- Controls & Filters Bar -->
@@ -32,7 +100,7 @@ import { EventDetailDrawerComponent } from './event-detail-drawer.component';
           <span class="search-icon">🔍</span>
           <input
             type="text"
-            placeholder="Buscar por tema, tecnología o mentor..."
+            placeholder="Buscar por nombre, artista, tecnología o ciudad..."
             [ngModel]="searchQuery()"
             (ngModelChange)="searchQuery.set($event)"
             class="search-input"
@@ -56,15 +124,15 @@ import { EventDetailDrawerComponent } from './event-detail-drawer.component';
           <button
             type="button"
             class="pill-btn"
-            [class.active]="selectedModality() === 'Virtual'"
-            (click)="selectedModality.set('Virtual')"
-          >🌐 Virtual Live</button>
-          <button
-            type="button"
-            class="pill-btn"
             [class.active]="selectedModality() === 'Presencial'"
             (click)="selectedModality.set('Presencial')"
           >🏛 Presencial</button>
+          <button
+            type="button"
+            class="pill-btn"
+            [class.active]="selectedModality() === 'Virtual'"
+            (click)="selectedModality.set('Virtual')"
+          >🌐 Virtual Live</button>
           <button
             type="button"
             class="pill-btn"
@@ -74,8 +142,8 @@ import { EventDetailDrawerComponent } from './event-detail-drawer.component';
         </div>
       </div>
 
-      <!-- Category Filter Tabs -->
-      <div class="category-tabs">
+      <!-- Category Filter Pills for Detailed Tag Navigation -->
+      <div class="category-tabs" *ngIf="selectedMacroType() === 'all' || selectedMacroType() === 'workshop'">
         <button
           *ngFor="let cat of categories"
           type="button"
@@ -90,10 +158,13 @@ import { EventDetailDrawerComponent } from './event-detail-drawer.component';
 
       <!-- Count & Result Info -->
       <div class="results-info">
-        <span>Mostrando <strong>{{ filteredEvents().length }}</strong> experiencias formativas disponibles</span>
+        <span>Mostrando <strong>{{ filteredEvents().length }}</strong> eventos y actividades programadas para 2026</span>
+        <span class="clear-filters-hint" *ngIf="searchQuery() || selectedCategory() !== 'all' || selectedModality() !== 'all' || selectedMacroType() !== 'all'">
+          <button type="button" class="btn-link-reset" (click)="resetFilters()">Limpiar filtros</button>
+        </span>
       </div>
 
-      <!-- Workshop Cards Grid -->
+      <!-- Workshop & Events Cards Grid -->
       <div class="events-grid" *ngIf="filteredEvents().length > 0; else noResults">
         <mfe-event-card
           *ngFor="let event of filteredEvents()"
@@ -107,10 +178,10 @@ import { EventDetailDrawerComponent } from './event-detail-drawer.component';
       <ng-template #noResults>
         <div class="no-results-box">
           <div class="empty-icon">🔎</div>
-          <h3>No encontramos talleres con esos criterios</h3>
-          <p>Intenta ajustar la búsqueda o seleccionar otra categoría o modalidad.</p>
+          <h3>No encontramos resultados con estos criterios</h3>
+          <p>Intenta ajustar la búsqueda, restablecer los filtros o explorar otra categoría de la temporada 2026.</p>
           <button type="button" class="btn-reset" (click)="resetFilters()">
-            Restablecer Filtros
+            Ver Todo el Catálogo 2026
           </button>
         </div>
       </ng-template>
@@ -127,14 +198,14 @@ import { EventDetailDrawerComponent } from './event-detail-drawer.component';
   styles: [`
     .events-catalog-container {
       width: 100%;
-      max-width: 1280px;
+      max-width: 1320px;
       margin: 0 auto;
-      padding: 60px 24px 80px;
+      padding: 60px 24px 90px;
     }
 
     .catalog-header {
       text-align: center;
-      max-width: 760px;
+      max-width: 820px;
       margin: 0 auto 40px;
     }
 
@@ -169,20 +240,100 @@ import { EventDetailDrawerComponent } from './event-detail-drawer.component';
     }
 
     .catalog-title {
-      font-size: clamp(2rem, 4vw, 2.75rem);
-      font-weight: 800;
+      font-size: clamp(2.1rem, 4.2vw, 3.1rem);
+      font-weight: 850;
       color: #ffffff;
-      line-height: 1.2;
+      line-height: 1.18;
       margin: 0 0 16px;
       font-family: 'Outfit', sans-serif;
       letter-spacing: -0.02em;
     }
 
     .catalog-desc {
-      font-size: 1.05rem;
+      font-size: 1.08rem;
       color: #94a3b8;
-      line-height: 1.6;
+      line-height: 1.65;
       margin: 0;
+    }
+
+    /* Macro Hub Tabs (2026 Innovation) */
+    .macro-hub-tabs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+
+    .macro-tab {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      backdrop-filter: blur(10px);
+    }
+
+    .macro-tab:hover {
+      background: rgba(255, 255, 255, 0.06);
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    .macro-tab.active {
+      background: rgba(99, 102, 241, 0.18);
+      border-color: #6366f1;
+      box-shadow: 0 8px 25px rgba(99, 102, 241, 0.25);
+    }
+
+    .macro-tab.tab-course.active {
+      background: rgba(124, 58, 237, 0.2);
+      border-color: #a855f7;
+      box-shadow: 0 8px 25px rgba(168, 85, 247, 0.3);
+    }
+
+    .macro-tab.tab-concert.active {
+      background: rgba(236, 72, 153, 0.2);
+      border-color: #f43f5e;
+      box-shadow: 0 8px 25px rgba(244, 63, 94, 0.3);
+    }
+
+    .macro-tab.tab-leisure.active {
+      background: rgba(245, 158, 11, 0.2);
+      border-color: #f59e0b;
+      box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+    }
+
+    .macro-tab.tab-workshop.active {
+      background: rgba(6, 182, 212, 0.2);
+      border-color: #06b6d4;
+      box-shadow: 0 8px 25px rgba(6, 182, 212, 0.3);
+    }
+
+    .macro-icon {
+      font-size: 1.8rem;
+    }
+
+    .macro-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .macro-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #ffffff;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .macro-count {
+      font-size: 0.78rem;
+      color: #94a3b8;
     }
 
     .filters-panel {
@@ -208,7 +359,7 @@ import { EventDetailDrawerComponent } from './event-detail-drawer.component';
       padding: 8px 16px;
       border-radius: 10px;
       flex-grow: 1;
-      max-width: 420px;
+      max-width: 440px;
     }
 
     .search-input {
@@ -304,6 +455,9 @@ import { EventDetailDrawerComponent } from './event-detail-drawer.component';
     }
 
     .results-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       font-size: 0.88rem;
       color: #64748b;
       margin-bottom: 24px;
@@ -313,9 +467,18 @@ import { EventDetailDrawerComponent } from './event-detail-drawer.component';
       color: #38bdf8;
     }
 
+    .btn-link-reset {
+      background: transparent;
+      border: none;
+      color: #f43f5e;
+      cursor: pointer;
+      font-size: 0.82rem;
+      text-decoration: underline;
+    }
+
     .events-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
       gap: 28px;
     }
 
@@ -367,12 +530,13 @@ export class EventsCatalogComponent {
 
   readonly allEvents = signal<WorkshopEvent[]>(this.catalogService.getAllEvents());
   readonly searchQuery = signal<string>('');
+  readonly selectedMacroType = signal<string>('all');
   readonly selectedCategory = signal<string>('all');
   readonly selectedModality = signal<string>('all');
   readonly drawerEvent = signal<WorkshopEvent | null>(null);
 
   readonly categories = [
-    { id: 'all', label: 'Todos los Talleres', icon: '✨' },
+    { id: 'all', label: 'Todos los Temas', icon: '✨' },
     { id: 'ai', label: 'IA & Agentes', icon: '🧠' },
     { id: 'architecture', label: 'Arquitectura & MFE', icon: '🏛' },
     { id: 'ux', label: 'Diseño & UX Systems', icon: '🎨' },
@@ -380,33 +544,62 @@ export class EventsCatalogComponent {
     { id: 'cloud', label: 'Cloud & FinOps', icon: '☁️' },
   ];
 
+  countByType(type: string): number {
+    return this.allEvents().filter((e) => {
+      if (type === 'leisure') return e.eventType === 'leisure' || e.eventType === 'meetup';
+      return e.eventType === type;
+    }).length;
+  }
+
   readonly filteredEvents = computed(() => {
     const q = this.searchQuery().toLowerCase().trim();
+    const macro = this.selectedMacroType();
     const cat = this.selectedCategory();
     const mod = this.selectedModality();
 
     return this.allEvents().filter((event) => {
-      // Category filter
+      // Macro type filter
+      if (macro !== 'all') {
+        if (macro === 'leisure' && event.eventType !== 'leisure' && event.eventType !== 'meetup') {
+          return false;
+        } else if (macro !== 'leisure' && event.eventType !== macro && event.category !== macro) {
+          return false;
+        }
+      }
+
+      // Detailed category filter
       if (cat !== 'all' && event.category !== cat) {
         return false;
       }
+
       // Modality filter
       if (mod !== 'all' && event.modality !== mod) {
         return false;
       }
-      // Text search
+
+      // Search Query
       if (q) {
         const matchesTitle = event.title.toLowerCase().includes(q);
         const matchesSub = event.subtitle.toLowerCase().includes(q);
-        const matchesInstructor = event.instructor.name.toLowerCase().includes(q);
+        const matchesLocation = event.location.toLowerCase().includes(q);
+        const matchesInstructor = event.instructor?.name.toLowerCase().includes(q) ?? false;
+        const matchesConcert = event.concertData?.lineUp.some((a) => a.toLowerCase().includes(q)) ?? false;
         const matchesTopic = event.topics.some((t) => t.toLowerCase().includes(q));
-        if (!matchesTitle && !matchesSub && !matchesInstructor && !matchesTopic) {
+
+        if (!matchesTitle && !matchesSub && !matchesLocation && !matchesInstructor && !matchesConcert && !matchesTopic) {
           return false;
         }
       }
       return true;
     });
   });
+
+  setMacroType(type: string): void {
+    this.selectedMacroType.set(type);
+    if (type !== 'all' && type !== 'workshop') {
+      this.selectedCategory.set('all');
+    }
+  }
 
   onSelectCategory(catId: string): void {
     this.selectedCategory.set(catId);
@@ -424,6 +617,7 @@ export class EventsCatalogComponent {
 
   resetFilters(): void {
     this.searchQuery.set('');
+    this.selectedMacroType.set('all');
     this.selectedCategory.set('all');
     this.selectedModality.set('all');
   }

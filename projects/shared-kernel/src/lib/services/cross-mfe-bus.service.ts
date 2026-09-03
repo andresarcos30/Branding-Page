@@ -3,6 +3,7 @@ import { WorkshopEvent } from '../models/workshop-event.model';
 import { BookingConfirmation } from '../models/booking.model';
 
 const GLOBAL_BUS_KEY = '__AURORA_CROSS_MFE_BUS__';
+const STORAGE_KEY = 'aurora_tickets_wallet_v1';
 
 export interface BusEventsMap {
   OPEN_BOOKING: WorkshopEvent;
@@ -21,8 +22,31 @@ export class CrossMfeBusService {
   readonly latestConfirmation = signal<BookingConfirmation | null>(null);
   readonly activeCategoryFilter = signal<string>('all');
 
+  // Ticket Wallet Signals
+  readonly isWalletModalOpen = signal<boolean>(false);
+  readonly storedBookings = signal<BookingConfirmation[]>(this.loadBookingsFromStorage());
+
   constructor() {
     this.initGlobalWindowBridge();
+  }
+
+  private loadBookingsFromStorage(): BookingConfirmation[] {
+    if (typeof window === 'undefined') return [];
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  private saveBookingsToStorage(bookings: BookingConfirmation[]): void {
+    if (typeof window === 'undefined') return;
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(bookings));
+    } catch (e) {
+      console.warn('Error saving tickets to localStorage', e);
+    }
   }
 
   private initGlobalWindowBridge(): void {
@@ -50,6 +74,7 @@ export class CrossMfeBusService {
     window.addEventListener('aurora:booking-confirmed', ((e: CustomEvent) => {
       if (e.detail) {
         this.latestConfirmation.set(e.detail);
+        this.addBookingToWallet(e.detail);
       }
     }) as EventListener);
   }
@@ -73,11 +98,26 @@ export class CrossMfeBusService {
 
   notifyBookingConfirmed(confirmation: BookingConfirmation): void {
     this.latestConfirmation.set(confirmation);
+    this.addBookingToWallet(confirmation);
     if (typeof window !== 'undefined') {
       window.dispatchEvent(
         new CustomEvent('aurora:booking-confirmed', { detail: confirmation })
       );
     }
+  }
+
+  addBookingToWallet(confirmation: BookingConfirmation): void {
+    const list = [confirmation, ...this.storedBookings().filter(b => b.bookingId !== confirmation.bookingId)];
+    this.storedBookings.set(list);
+    this.saveBookingsToStorage(list);
+  }
+
+  openWallet(): void {
+    this.isWalletModalOpen.set(true);
+  }
+
+  closeWallet(): void {
+    this.isWalletModalOpen.set(false);
   }
 
   setCategoryFilter(category: string): void {
@@ -89,3 +129,4 @@ export class CrossMfeBusService {
     }
   }
 }
+

@@ -2,7 +2,8 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "cli": {
-    "packageManager": "npm"
+    "packageManager": "npm",
+    "analytics": "dc71fd3b-b99a-4a01-ac40-143116fb737c"
   },
   "newProjectRoot": "projects",
   "projects": {
@@ -79,7 +80,15 @@
               }
             ],
             "styles": ["projects/shell/src/styles.css"],
-            "polyfills": ["es-module-shims"]
+            "polyfills": ["es-module-shims"],
+            "server": "projects/shell/src/main.server.ts",
+            "outputMode": "server",
+            "ssr": {
+              "entry": "projects/shell/src/server.ts"
+            },
+            "security": {
+              "allowedHosts": ["localhost", "127.0.0.1"]
+            }
           },
           "configurations": {
             "production": {

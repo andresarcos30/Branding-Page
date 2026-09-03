@@ -4,12 +4,18 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve shell",
+    "prestart": "npm run build:shared && npm run link:shared",
     "start:all": "concurrently -k -p \"[{name}]\" -n \"SHELL,EVENTS,BOOKING\" -c \"cyan,magenta,green\" \"npm.cmd run start:shell\" \"npm.cmd run start:events\" \"npm.cmd run start:booking\"",
+    "prestart:all": "npm run build:shared && npm run link:shared",
     "start:shell": "ng serve shell",
+    "prestart:shell": "npm run build:shared && npm run link:shared",
     "start:events": "ng serve mfe-events",
     "start:booking": "ng serve mfe-booking",
     "build": "ng build shell",
+    "build:shared": "ng build shared-kernel",
+    "link:shared": "node -e \"const fs=require('fs'), p=require('path'); if(!fs.existsSync('node_modules/shared-kernel')) fs.symlinkSync(p.resolve('dist/shared-kernel'), p.resolve('node_modules/shared-kernel'), 'junction');\"",
     "build:all": "ng build shared-kernel && ng build mfe-events && ng build mfe-booking && ng build shell",
+    "serve:ssr:shell": "node dist/shell/server/server.mjs",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -22,21 +28,25 @@
     "@angular/core": "^22.1.0",
     "@angular/forms": "^22.1.0",
     "@angular/platform-browser": "^22.1.0",
+    "@angular/platform-server": "^22.1.0",
     "@angular/router": "^22.1.0",
+    "@angular/ssr": "^22.1.7",
+    "@types/express": "^5.0.6",
     "concurrently": "^10.0.5",
+    "es-module-shims": "^2.8.0",
+    "express": "^5.2.1",
     "rxjs": "~7.8.0",
-    "tslib": "^2.3.0",
-    "es-module-shims": "^2.8.0"
+    "tslib": "^2.3.0"
   },
   "devDependencies": {
     "@angular/build": "^22.1.7",
     "@angular/cli": "^22.1.7",
     "@angular/compiler-cli": "^22.1.0",
+    "@softarc/native-federation-orchestrator": "^4.6.0",
     "jsdom": "^28.0.0",
     "ng-packagr": "^22.1.0",
     "prettier": "^3.8.1",
     "typescript": "~6.0.2",
-    "vitest": "^4.0.8",
-    "@softarc/native-federation-orchestrator": "^4.6.0"
+    "vitest": "^4.0.8"
   }
 }

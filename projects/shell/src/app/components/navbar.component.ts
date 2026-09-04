@@ -1,5 +1,6 @@
-import { Component, signal, HostListener } from '@angular/core';
+import { Component, signal, HostListener, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { CrossMfeBusService } from 'shared-kernel';
 
 @Component({
   selector: 'shell-navbar',
@@ -31,6 +32,20 @@ import { CommonModule } from '@angular/common';
 
         <!-- Right CTA Actions -->
         <div class="nav-actions">
+          <!-- Ticket Wallet Trigger Button -->
+          <button
+            type="button"
+            class="btn-wallet-nav"
+            (click)="openWallet()"
+            title="Ver mis entradas guardadas"
+          >
+            <span class="wallet-icon">🎟️</span>
+            <span class="wallet-txt">Mis Entradas</span>
+            <span class="wallet-badge-count" *ngIf="ticketCount() > 0">
+              {{ ticketCount() }}
+            </span>
+          </button>
+
           <div class="urgency-pill">
             <span class="live-dot"></span>
             <span>Edición 2026</span>
@@ -153,6 +168,43 @@ import { CommonModule } from '@angular/common';
       gap: 16px;
     }
 
+    .btn-wallet-nav {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      color: #cbd5e1;
+      padding: 8px 16px;
+      border-radius: 9999px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .btn-wallet-nav:hover {
+      background: rgba(99, 102, 241, 0.18);
+      border-color: #6366f1;
+      color: #ffffff;
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+    }
+
+    .wallet-icon {
+      font-size: 1rem;
+    }
+
+    .wallet-badge-count {
+      background: #6366f1;
+      color: #ffffff;
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 1px 7px;
+      border-radius: 9999px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
     .urgency-pill {
       display: inline-flex;
       align-items: center;
@@ -216,7 +268,13 @@ import { CommonModule } from '@angular/common';
   `],
 })
 export class NavbarComponent {
+  private readonly busService = inject(CrossMfeBusService);
   readonly isScrolled = signal<boolean>(false);
+  readonly ticketCount = computed(() => this.busService.storedBookings().length);
+
+  openWallet(): void {
+    this.busService.openWallet();
+  }
 
   @HostListener('window:scroll', [])
   onWindowScroll(): void {

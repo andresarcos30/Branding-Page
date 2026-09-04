@@ -10,6 +10,7 @@ import { TestimonialsComponent } from './components/testimonials.component';
 import { FaqComponent } from './components/faq.component';
 import { FooterComponent } from './components/footer.component';
 import { FederatedBookingHostComponent } from './components/federated-booking-host.component';
+import { TicketWalletComponent } from './components/ticket-wallet.component';
 
 @Component({
   selector: 'app-root',
@@ -25,6 +26,7 @@ import { FederatedBookingHostComponent } from './components/federated-booking-ho
     FaqComponent,
     FooterComponent,
     FederatedBookingHostComponent,
+    TicketWalletComponent,
   ],
   template: `
     <div class="shell-app-layout">
@@ -54,6 +56,9 @@ import { FederatedBookingHostComponent } from './components/federated-booking-ho
 
       <!-- Micro Frontend 2: Federated Booking Modal -->
       <shell-federated-booking-host></shell-federated-booking-host>
+
+      <!-- Ticket Wallet Vault Modal -->
+      <shell-ticket-wallet></shell-ticket-wallet>
 
       <!-- Confirmation Toast Floating Notification -->
       <div class="toast-notification" *ngIf="activeToast() as toast">

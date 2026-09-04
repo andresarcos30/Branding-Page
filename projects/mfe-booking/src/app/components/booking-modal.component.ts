@@ -314,10 +314,13 @@ import { BookingStateService } from '../services/booking-state.service';
               </div>
             </div>
 
-            <!-- Action Buttons for Calendar and Link -->
+            <!-- Action Buttons for Calendar, Wallet and Link -->
             <div class="ticket-actions">
               <button type="button" class="btn-cal-download" (click)="state.downloadIcsCalendarFile(conf)">
-                📅 Descargar Recordatorio (.ICS)
+                📅 Guardar en Calendario (.ICS)
+              </button>
+              <button type="button" class="btn-wallet-view" (click)="openWalletAndCloseModal()">
+                🎟️ Ver en Mi Bóveda
               </button>
               <button type="button" class="btn-copy-link" (click)="copyAccessLink(conf.bookingId)">
                 {{ copyButtonText() }}
@@ -1231,6 +1234,24 @@ import { BookingStateService } from '../services/booking-state.service';
       box-shadow: 0 6px 20px rgba(14, 165, 233, 0.5);
     }
 
+    .btn-wallet-view {
+      background: rgba(99, 102, 241, 0.2);
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      color: #c7d2fe;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-wallet-view:hover {
+      background: rgba(99, 102, 241, 0.35);
+      color: #ffffff;
+      transform: translateY(-2px);
+    }
+
     .btn-copy-link {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.15);
@@ -1355,6 +1376,11 @@ export class BookingModalComponent {
   onConfirmBooking(): void {
     const confirmation = this.state.completeBooking();
     this.busService.notifyBookingConfirmed(confirmation);
+  }
+
+  openWalletAndCloseModal(): void {
+    this.busService.closeBooking();
+    this.busService.openWallet();
   }
 
   copyAccessLink(bookingId: string): void {

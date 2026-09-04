@@ -101,10 +101,20 @@ import { CrossMfeBusService, BookingConfirmation } from 'shared-kernel';
                   <div class="pass-btn-group">
                     <button
                       type="button"
+                      class="btn-pass-action google"
+                      (click)="openGoogleCalendar(t)"
+                    >
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                        <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v5h-5v-5z"/>
+                      </svg>
+                      Google Calendar
+                    </button>
+                    <button
+                      type="button"
                       class="btn-pass-action primary"
                       (click)="downloadIcs(t)"
                     >
-                      📅 Guardar en Calendario (.ics)
+                      📅 Descargar .ics
                     </button>
                     <button
                       type="button"
@@ -532,6 +542,17 @@ import { CrossMfeBusService, BookingConfirmation } from 'shared-kernel';
       color: #ffffff;
     }
 
+    .btn-pass-action.google {
+      background: rgba(26, 115, 232, 0.2);
+      border: 1px solid rgba(26, 115, 232, 0.45);
+      color: #93c5fd;
+    }
+
+    .btn-pass-action.google:hover {
+      background: rgba(26, 115, 232, 0.4);
+      color: #ffffff;
+    }
+
     .btn-pass-action.secondary {
       background: rgba(255, 255, 255, 0.06);
       border: 1px solid rgba(255, 255, 255, 0.12);
@@ -600,6 +621,21 @@ export class TicketWalletComponent {
       setTimeout(() => {
         this.copiedIdx.set(null);
       }, 2500);
+    }
+  }
+
+  openGoogleCalendar(conf: BookingConfirmation): void {
+    const event = conf.event;
+    const title = encodeURIComponent(`${event.title} - AURORA Masterclass`);
+    const details = encodeURIComponent(
+      `Taller: ${event.title}\n${event.subtitle}\n\nMentor/Instructor: ${event.instructor?.name || 'Comité Técnico AURORA'}\nPase: ${conf.tier.toUpperCase()}\nCódigo de Reserva: ${conf.bookingId}\n\nAcceso Oficial AURORA Summit 2026`
+    );
+    const location = encodeURIComponent(event.location || 'AURORA Virtual Campus & Live Streaming');
+    const dates = '20261024T140000Z/20261024T180000Z';
+    const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}&dates=${dates}`;
+    
+    if (typeof window !== 'undefined') {
+      window.open(url, '_blank', 'noopener,noreferrer');
     }
   }
 

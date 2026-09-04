@@ -168,4 +168,21 @@ export class BookingStateService {
     link.click();
     document.body.removeChild(link);
   }
+
+  openGoogleCalendar(confirmation: BookingConfirmation): void {
+    const event = confirmation.event;
+    const title = encodeURIComponent(`${event.title} - AURORA Masterclass`);
+    const details = encodeURIComponent(
+      `Taller Oficial: ${event.title}\n${event.subtitle}\n\nMentor/Ponente: ${event.instructor?.name || 'AURORA Tech'}\nPase Adquirido: ${confirmation.tier.toUpperCase()}\nCódigo de Reserva: ${confirmation.bookingId}\n\nAcceso Oficial AURORA Summit 2026`
+    );
+    const location = encodeURIComponent(event.location || 'AURORA Live Campus');
+    // 20261024T140000Z / 20261024T180000Z
+    const dates = '20261024T140000Z/20261024T180000Z';
+    const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}&dates=${dates}`;
+    
+    if (typeof window !== 'undefined') {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+  }
 }
+

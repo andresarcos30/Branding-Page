@@ -32,6 +32,18 @@ import { CrossMfeBusService } from 'shared-kernel';
 
         <!-- Right CTA Actions -->
         <div class="nav-actions">
+          <!-- Aurora AI Concierge Trigger Button -->
+          <button
+            type="button"
+            class="btn-ai-nav"
+            (click)="openConcierge()"
+            title="Hablar con Aurora Concierge AI"
+          >
+            <span class="ai-nav-sparkle">✦</span>
+            <span class="ai-nav-txt">Aurora AI</span>
+            <span class="ai-nav-badge">2026</span>
+          </button>
+
           <!-- Ticket Wallet Trigger Button -->
           <button
             type="button"
@@ -60,22 +72,26 @@ import { CrossMfeBusService } from 'shared-kernel';
   `,
   styles: [`
     .navbar-wrapper {
-      position: fixed;
-      top: 0;
+      position: sticky;
+      top: 48px;
       left: 0;
       right: 0;
       z-index: 1000;
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      padding: 18px 24px;
+      padding: 14px 24px;
+      background: rgba(7, 10, 18, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .navbar-wrapper.scrolled {
       padding: 10px 24px;
-      background: rgba(7, 10, 18, 0.88);
+      background: rgba(7, 10, 18, 0.94);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
     }
 
     .navbar-container {
@@ -166,6 +182,43 @@ import { CrossMfeBusService } from 'shared-kernel';
       display: flex;
       align-items: center;
       gap: 16px;
+    }
+
+    .btn-ai-nav {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.18) 0%, rgba(168, 85, 247, 0.18) 100%);
+      border: 1px solid rgba(168, 85, 247, 0.45);
+      color: #ffffff;
+      padding: 8px 16px;
+      border-radius: 9999px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      transition: all 0.25s ease;
+      box-shadow: 0 0 16px rgba(124, 58, 237, 0.2);
+    }
+
+    .btn-ai-nav:hover {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.35) 0%, rgba(168, 85, 247, 0.35) 100%);
+      border-color: #c084fc;
+      transform: translateY(-1px);
+      box-shadow: 0 0 22px rgba(168, 85, 247, 0.45);
+    }
+
+    .ai-nav-sparkle {
+      color: #c084fc;
+      font-size: 0.95rem;
+    }
+
+    .ai-nav-badge {
+      background: rgba(168, 85, 247, 0.3);
+      color: #e9d5ff;
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 1px 6px;
+      border-radius: 9999px;
     }
 
     .btn-wallet-nav {
@@ -273,7 +326,27 @@ export class NavbarComponent {
   readonly ticketCount = computed(() => this.busService.storedBookings().length);
 
   openWallet(): void {
-    this.busService.openWallet();
+    if (this.busService && typeof (this.busService as any).openWallet === 'function') {
+      try {
+        this.busService.openWallet();
+      } catch (e) {
+        console.warn('busService.openWallet error', e);
+      }
+    } else if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('aurora:open-wallet'));
+    }
+  }
+
+  openConcierge(): void {
+    if (this.busService && typeof (this.busService as any).openConcierge === 'function') {
+      try {
+        this.busService.openConcierge();
+      } catch (e) {
+        console.warn('busService.openConcierge error', e);
+      }
+    } else if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('aurora:open-concierge'));
+    }
   }
 
   @HostListener('window:scroll', [])

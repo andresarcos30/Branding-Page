@@ -11,9 +11,7 @@ import { existsSync } from 'node:fs';
 const browserDistFolder = join(import.meta.dirname, '../browser');
 
 const app = express();
-const angularApp = new AngularNodeAppEngine({
-  allowedHosts: ['localhost', '127.0.0.1'],
-});
+const angularApp = new AngularNodeAppEngine();
 
 /**
  * Serve static files from /browser

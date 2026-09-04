@@ -10,6 +10,7 @@ export interface BusEventsMap {
   CLOSE_BOOKING: void;
   BOOKING_CONFIRMED: BookingConfirmation;
   FILTER_CATEGORY: string;
+  TOGGLE_CONCIERGE: boolean;
 }
 
 @Injectable({
@@ -21,6 +22,10 @@ export class CrossMfeBusService {
   readonly isBookingModalOpen = signal<boolean>(false);
   readonly latestConfirmation = signal<BookingConfirmation | null>(null);
   readonly activeCategoryFilter = signal<string>('all');
+
+  // Concierge AI Signals
+  readonly isConciergeOpen = signal<boolean>(false);
+  readonly conciergeTargetSearch = signal<string>('');
 
   // Ticket Wallet Signals
   readonly isWalletModalOpen = signal<boolean>(false);
@@ -77,6 +82,22 @@ export class CrossMfeBusService {
         this.addBookingToWallet(e.detail);
       }
     }) as EventListener);
+
+    window.addEventListener('aurora:open-concierge', (() => {
+      this.isConciergeOpen.set(true);
+    }) as EventListener);
+
+    window.addEventListener('aurora:close-concierge', (() => {
+      this.isConciergeOpen.set(false);
+    }) as EventListener);
+
+    window.addEventListener('aurora:open-wallet', (() => {
+      this.isWalletModalOpen.set(true);
+    }) as EventListener);
+
+    window.addEventListener('aurora:close-wallet', (() => {
+      this.isWalletModalOpen.set(false);
+    }) as EventListener);
   }
 
   openBooking(event: WorkshopEvent): void {
@@ -114,10 +135,38 @@ export class CrossMfeBusService {
 
   openWallet(): void {
     this.isWalletModalOpen.set(true);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('aurora:open-wallet'));
+    }
   }
 
   closeWallet(): void {
     this.isWalletModalOpen.set(false);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('aurora:close-wallet'));
+    }
+  }
+
+  openConcierge(): void {
+    this.isConciergeOpen.set(true);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('aurora:open-concierge'));
+    }
+  }
+
+  closeConcierge(): void {
+    this.isConciergeOpen.set(false);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('aurora:close-concierge'));
+    }
+  }
+
+  toggleConcierge(): void {
+    const next = !this.isConciergeOpen();
+    this.isConciergeOpen.set(next);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent(next ? 'aurora:open-concierge' : 'aurora:close-concierge'));
+    }
   }
 
   setCategoryFilter(category: string): void {
@@ -125,6 +174,18 @@ export class CrossMfeBusService {
     if (typeof window !== 'undefined') {
       window.dispatchEvent(
         new CustomEvent('aurora:category-filter', { detail: category })
+      );
+    }
+  }
+
+  triggerCatalogSearch(query: string, category?: string): void {
+    if (category) {
+      this.setCategoryFilter(category);
+    }
+    this.conciergeTargetSearch.set(query);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(
+        new CustomEvent('aurora:catalog-search', { detail: { query, category } })
       );
     }
   }

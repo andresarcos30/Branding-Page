@@ -90,7 +90,7 @@ import { CommonModule } from '@angular/common';
   styles: [`
     .hero-section {
       position: relative;
-      padding: 150px 24px 75px;
+      padding: 70px 24px 75px;
       overflow: hidden;
       display: flex;
       justify-content: center;

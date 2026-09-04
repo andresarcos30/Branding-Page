@@ -71,6 +71,7 @@
         "esbuild": {
           "builder": "@angular/build:application",
           "options": {
+            "outputPath": "dist/angular-ssr",
             "browser": "projects/shell/src/main.ts",
             "tsConfig": "projects/shell/tsconfig.app.json",
             "assets": [
@@ -85,9 +86,6 @@
             "outputMode": "server",
             "ssr": {
               "entry": "projects/shell/src/server.ts"
-            },
-            "security": {
-              "allowedHosts": ["localhost", "127.0.0.1"]
             }
           },
           "configurations": {

@@ -314,10 +314,19 @@ import { BookingStateService } from '../services/booking-state.service';
               </div>
             </div>
 
-            <!-- Action Buttons for Calendar and Link -->
+            <!-- Action Buttons for Google Calendar, .ICS, Wallet and Link -->
             <div class="ticket-actions">
+              <button type="button" class="btn-google-cal" (click)="state.openGoogleCalendar(conf)">
+                <svg class="gcal-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                  <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v5h-5v-5z"/>
+                </svg>
+                <span>Añadir a Google Calendar</span>
+              </button>
               <button type="button" class="btn-cal-download" (click)="state.downloadIcsCalendarFile(conf)">
-                📅 Descargar Recordatorio (.ICS)
+                📅 Descargar .ICS (Apple/Outlook)
+              </button>
+              <button type="button" class="btn-wallet-view" (click)="openWalletAndCloseModal()">
+                🎟️ Ver en Mi Bóveda
               </button>
               <button type="button" class="btn-copy-link" (click)="copyAccessLink(conf.bookingId)">
                 {{ copyButtonText() }}
@@ -1213,6 +1222,32 @@ import { BookingStateService } from '../services/booking-state.service';
       margin-top: 4px;
     }
 
+    .btn-google-cal {
+      background: #1a73e8;
+      color: #ffffff;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 15px rgba(26, 115, 232, 0.4);
+      transition: all 0.2s ease;
+    }
+
+    .btn-google-cal:hover {
+      background: #1557b0;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(26, 115, 232, 0.6);
+    }
+
+    .gcal-icon {
+      flex-shrink: 0;
+    }
+
     .btn-cal-download {
       background: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%);
       color: #ffffff;
@@ -1229,6 +1264,24 @@ import { BookingStateService } from '../services/booking-state.service';
     .btn-cal-download:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 20px rgba(14, 165, 233, 0.5);
+    }
+
+    .btn-wallet-view {
+      background: rgba(99, 102, 241, 0.2);
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      color: #c7d2fe;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-wallet-view:hover {
+      background: rgba(99, 102, 241, 0.35);
+      color: #ffffff;
+      transform: translateY(-2px);
     }
 
     .btn-copy-link {
@@ -1355,6 +1408,11 @@ export class BookingModalComponent {
   onConfirmBooking(): void {
     const confirmation = this.state.completeBooking();
     this.busService.notifyBookingConfirmed(confirmation);
+  }
+
+  openWalletAndCloseModal(): void {
+    this.busService.closeBooking();
+    this.busService.openWallet();
   }
 
   copyAccessLink(bookingId: string): void {

@@ -544,6 +544,31 @@ export class EventsCatalogComponent {
     { id: 'cloud', label: 'Cloud & FinOps', icon: '☁️' },
   ];
 
+  constructor() {
+    if (typeof window !== 'undefined') {
+      window.addEventListener('aurora:catalog-search', ((e: CustomEvent) => {
+        if (e.detail) {
+          const { query, category } = e.detail;
+          if (query !== undefined) {
+            this.searchQuery.set(query);
+          }
+          if (category) {
+            if (['course', 'concert', 'leisure', 'workshop'].includes(category)) {
+              this.selectedMacroType.set(category);
+            } else {
+              this.selectedCategory.set(category);
+            }
+          }
+          // Smooth scroll to catalog section
+          const el = document.getElementById('talleres');
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
+      }) as EventListener);
+    }
+  }
+
   countByType(type: string): number {
     return this.allEvents().filter((e) => {
       if (type === 'leisure') return e.eventType === 'leisure' || e.eventType === 'meetup';

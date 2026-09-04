@@ -10,12 +10,16 @@ import { TestimonialsComponent } from './components/testimonials.component';
 import { FaqComponent } from './components/faq.component';
 import { FooterComponent } from './components/footer.component';
 import { FederatedBookingHostComponent } from './components/federated-booking-host.component';
+import { TicketWalletComponent } from './components/ticket-wallet.component';
+import { CountdownBannerComponent } from './components/countdown-banner.component';
+import { AuroraConciergeAiComponent } from './components/aurora-concierge-ai.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
     CommonModule,
+    CountdownBannerComponent,
     NavbarComponent,
     HeroComponent,
     PartnersComponent,
@@ -25,9 +29,14 @@ import { FederatedBookingHostComponent } from './components/federated-booking-ho
     FaqComponent,
     FooterComponent,
     FederatedBookingHostComponent,
+    TicketWalletComponent,
+    AuroraConciergeAiComponent,
   ],
   template: `
     <div class="shell-app-layout">
+      <!-- Live Countdown Urgent Header Bar -->
+      <shell-countdown-banner></shell-countdown-banner>
+
       <!-- Global Navigation -->
       <shell-navbar></shell-navbar>
 
@@ -54,6 +63,12 @@ import { FederatedBookingHostComponent } from './components/federated-booking-ho
 
       <!-- Micro Frontend 2: Federated Booking Modal -->
       <shell-federated-booking-host></shell-federated-booking-host>
+
+      <!-- Ticket Wallet Vault Modal -->
+      <shell-ticket-wallet></shell-ticket-wallet>
+
+      <!-- Aurora Concierge AI Agent 2026/2027 -->
+      <shell-aurora-concierge-ai></shell-aurora-concierge-ai>
 
       <!-- Confirmation Toast Floating Notification -->
       <div class="toast-notification" *ngIf="activeToast() as toast">

@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "node dist/shell/server/server.mjs",
+    "start": "node dist/angular-ssr/server/server.mjs",
     "start:dev": "ng serve shell",
     "start:all": "concurrently -k -p \"[{name}]\" -n \"SHELL,EVENTS,BOOKING\" -c \"cyan,magenta,green\" \"npm.cmd run start:shell\" \"npm.cmd run start:events\" \"npm.cmd run start:booking\"",
     "start:shell": "ng serve shell",
@@ -13,7 +13,7 @@
     "build:shared": "ng build shared-kernel",
     "link:shared": "node -e \"const fs=require('fs'), p=require('path'); if(!fs.existsSync('node_modules/shared-kernel')) fs.symlinkSync(p.resolve('dist/shared-kernel'), p.resolve('node_modules/shared-kernel'), 'junction');\"",
     "build:all": "ng build shared-kernel && npm run link:shared && ng build mfe-events && ng build mfe-booking && ng build shell",
-    "serve:ssr:shell": "node dist/shell/server/server.mjs",
+    "serve:ssr:shell": "node dist/angular-ssr/server/server.mjs",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
